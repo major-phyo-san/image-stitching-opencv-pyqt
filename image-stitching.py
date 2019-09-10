@@ -1,0 +1,1 @@
+from imageProcessor import ImageStitcher
