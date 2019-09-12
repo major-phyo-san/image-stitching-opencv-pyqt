@@ -1,6 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QAction, qApp, QFileDialog, QLabel, QPushButton
-from PyQt5.QtCore import QStringListModel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QAction, qApp, QFileDialog, QPushButton
 from PyQt5.QtGui import QIcon
 from imageProcessor import ImageStitcher
 
@@ -12,6 +11,10 @@ class App(QMainWindow):
     appMarginTop = 100
     appWidth = 640
     appHeight = 480
+
+    fileNames = None
+    imstcher = ImageStitcher()
+    status = None
 
     def __init__(self):
         super().__init__()
@@ -37,12 +40,18 @@ class App(QMainWindow):
     def addWidgets(self):
         self.statusBar().showMessage('Ready')
         self.centralWidget = QWidget(self)
-        vBoxLayout = QVBoxLayout()
+        vBoxLayout = QHBoxLayout()
         self.centralWidget.setLayout(vBoxLayout)
         self.setCentralWidget(self.centralWidget)
 
-        label = QLabel("Hello World")
-        vBoxLayout.addWidget(label)
+        self.stitchBtn = QPushButton("Stitch Images")
+        self.stitchBtn.clicked.connect(self.stitchImages)
+        vBoxLayout.addWidget(self.stitchBtn)
+
+        cropBtn = QPushButton("Smooth stitched image")
+        cropBtn.clicked.connect(self.cropStitchedImage)
+        vBoxLayout.addWidget(cropBtn)
+
 
     def openFileDialog(self):
         fileDialog = QFileDialog()
@@ -55,7 +64,19 @@ class App(QMainWindow):
         if not self.fileNames:
             print("No files")
         else:
-            print(len(self.fileNames))
+            print(str(len(self.fileNames))+ " files selected")
+            self.imstcher.load_images(self.fileNames)
+
+    def stitchImages(self):
+        if not self.fileNames:
+            print("No files to stitch")
+        else:
+            print(str(len(self.fileNames))+ " files loaded, ready to stitch them")
+            self.status = self.imstcher.stitch_images()
+            print(self.status)
+
+    def cropStitchedImage(self):
+        self.imstcher.cropped_stitched()
 
 
 if __name__ == '__main__':
