@@ -52,6 +52,10 @@ class App(QMainWindow):
         cropBtn.clicked.connect(self.cropStitchedImage)
         vBoxLayout.addWidget(cropBtn)
 
+        saveOutputImageBtn = QPushButton("Save Output Image")
+        saveOutputImageBtn.clicked.connect(self.saveOutputImage)
+        vBoxLayout.addWidget(saveOutputImageBtn)
+
 
     def openFileDialog(self):
         fileDialog = QFileDialog()
@@ -71,13 +75,13 @@ class App(QMainWindow):
         if not self.fileNames:
             print("No files to stitch")
         else:
-            print(str(len(self.fileNames))+ " files loaded, ready to stitch them")
             self.status = self.imstcher.stitch_images()
-            print(self.status)
 
     def cropStitchedImage(self):
-        self.imstcher.cropped_stitched()
+        self.imstcher.smooth_stitched_image()
 
+    def saveOutputImage(self):
+        self.imstcher.save_output_image()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

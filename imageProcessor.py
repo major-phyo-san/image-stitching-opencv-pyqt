@@ -15,8 +15,7 @@ import os
    Image resizing logic is based on a tutorial at
    https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_geometric_transformations/py_geometric_transformations.html
    Test images are used from
-   https://github.com/kushalvyas/Python-Multiple-Image-Stitching/tree/master/images
-   
+   https://github.com/kushalvyas/Python-Multiple-Image-Stitching/tree/master/images   
 """
 
 
@@ -67,20 +66,22 @@ class ImageStitcher:
         return resized
 
     def stitch_images(self):
-        print("stitch_images called")
+        print("Stitching images, please wait....")
         self.stitcher = ocv.createStitcher(try_use_gpu=False)
         (self.status, self.stitched) = self.stitcher.stitch(self.images)
+        self.images = []
         if self.status == 0:
+            print("Image stitching completed")
             ocv.imshow("stitched image", self.stitched)
             ocv.waitKey(0)
             ocv.destroyAllWindows()
         else:
-            print("Cannot stitch images")
-        return self.status
+            print("Cannot stitch images. "+" Error code " + str(self.status))
+
 
     def smooth_stitched_image(self):
+        print("Smoothing output image, please wait....")
         self.stitched = ocv.copyMakeBorder(self.stitched, 10,10,10,10, ocv.BORDER_CONSTANT, (0,0,0))
-
         gray = ocv.cvtColor(self.stitched, ocv.COLOR_BGR2GRAY)
         thresh = ocv.threshold(gray, 0, 255, ocv.THRESH_BINARY)[1]
 
@@ -105,9 +106,15 @@ class ImageStitcher:
         c = max(cnts, key=ocv.contourArea)
         (x, y, w, h) = ocv.boundingRect(c)
         self.cropped_stitched = self.stitched[y:y + h, x:x + w]
+        self.stitched = None
         ocv.imshow("output image",self.cropped_stitched)
-        k = ocv.waitKey(0) & 0xFF
-        if k == ord('s'):
-            dirPath = os.getcwd()
-            ocv.imwrite(dirPath+ "/" + "output_stitched_image.jpg", self.cropped_stitched)
-            ocv.destroyAllWindows()
+        ocv.waitKey(0)
+        ocv.destroyAllWindows()
+
+    def save_output_image(self):
+       dirPath = os.getcwd()
+       ocv.imwrite(dirPath+ "/" + "output-image/" + "output_stitched_image.jpg",self.cropped_stitched)
+       print("Output image saved")
+       self.cropped_stitched = None 
+
+     
