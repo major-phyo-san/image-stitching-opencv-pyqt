@@ -1,7 +1,9 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QAction, qApp, QFileDialog, QPushButton
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QUrl
 from imageProcessor import ImageStitcher
+import os.path
 
 
 class App(QMainWindow):
@@ -15,6 +17,8 @@ class App(QMainWindow):
     fileNames = None
     imstcher = ImageStitcher()
     status = None
+    firstFileName = None
+    saveDir = None
 
     def __init__(self):
         super().__init__()
@@ -65,11 +69,16 @@ class App(QMainWindow):
         fileDialogTitle = "Load Images"
         initialDir = "c:\\users"
         self.fileNames, _filter = fileDialog.getOpenFileNames(self.centralWidget, fileDialogTitle, initialDir, filter)
+        self.firstFileName = None
         if not self.fileNames:
             print("No files")
         else:
             print(str(len(self.fileNames))+ " files selected")
             self.imstcher.load_images(self.fileNames)
+            self.firstFileName = QUrl.fromLocalFile(self.fileNames[0]).fileName()
+            self.saveDir = os.path.dirname(self.fileNames[0])            
+            print("First file name "+self.firstFileName)
+            print("Path " + os.path.dirname(self.fileNames[0]))
 
     def stitchImages(self):
         if not self.fileNames:
@@ -81,7 +90,7 @@ class App(QMainWindow):
         self.imstcher.smooth_stitched_image()
 
     def saveOutputImage(self):
-        self.imstcher.save_output_image()
+        self.imstcher.save_output_image(self.firstFileName, self.saveDir)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

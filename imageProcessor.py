@@ -1,10 +1,9 @@
 import numpy as np
 import cv2 as ocv
 import imutils
-import os
 
 """
-   written and completed by major-phyo-san on 12th September, 2019
+   written and completed by major-phyo-san on 12th November, 2019
 
    Python OpenCV version 3.4.2.16
    PyQt5 version 5.13.0
@@ -111,9 +110,8 @@ class ImageStitcher:
         ocv.waitKey(0)
         ocv.destroyAllWindows()
 
-    def save_output_image(self):
-       dirPath = os.getcwd()
-       ocv.imwrite(dirPath+ "/" + "output-image/" + "output_stitched_image.jpg",self.cropped_stitched)
+    def save_output_image(self,fileName,saveDir):       
+       ocv.imwrite(saveDir+ "/" +fileName + "_output_stitched_image.jpg",self.cropped_stitched)
        print("Output image saved")
        self.cropped_stitched = None 
 
