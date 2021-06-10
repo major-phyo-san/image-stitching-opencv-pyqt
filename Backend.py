@@ -9,7 +9,7 @@ import imutils
    PyQt5 version 5.13.0
    Imutils version 0.5.3
    
-   Image stiching and cropping logics are based on an article at 
+   Image stitching and cropping logic are based on an article at 
    https://www.pyimagesearch.com/2018/12/17/image-stitching-with-opencv-and-python/
    Image resizing logic is based on a tutorial at
    https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_geometric_transformations/py_geometric_transformations.html
@@ -113,6 +113,4 @@ class ImageStitcher:
     def save_output_image(self,fileName,saveDir):       
        ocv.imwrite(saveDir+ "/" +fileName + "_output_stitched_image.jpg",self.cropped_stitched)
        print("Output image saved")
-       self.cropped_stitched = None 
-
-     
+       self.cropped_stitched = None

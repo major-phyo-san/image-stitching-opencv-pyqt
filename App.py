@@ -1,21 +1,23 @@
 import sys
+import os.path
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QAction, qApp, QFileDialog, QPushButton
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QUrl
-from imageProcessor import ImageStitcher
-import os.path
+
+from Backend import ImageStitcher
 
 
-class App(QMainWindow):
+class AppLayout(QMainWindow):
 
-    appTitle = "Image Stitching with OpenCV"
+    appTitle = "Image Stitching App with OpenCV"
     appMarginLeft = 100
     appMarginTop = 100
     appWidth = 640
     appHeight = 480
 
     fileNames = None
-    imstcher = ImageStitcher()
+    imageStitcher = ImageStitcher()
+    ## imstcher = ImageStitcher()
     status = None
     firstFileName = None
     saveDir = None
@@ -74,7 +76,7 @@ class App(QMainWindow):
             print("No files")
         else:
             print(str(len(self.fileNames))+ " files selected")
-            self.imstcher.load_images(self.fileNames)
+            self.imageStitcher.load_images(self.fileNames)
             self.firstFileName = QUrl.fromLocalFile(self.fileNames[0]).fileName()
             self.saveDir = os.path.dirname(self.fileNames[0])            
             print("First file name "+self.firstFileName)
@@ -84,16 +86,17 @@ class App(QMainWindow):
         if not self.fileNames:
             print("No files to stitch")
         else:
-            self.status = self.imstcher.stitch_images()
+            self.status = self.imageStitcher.stitch_images()
 
     def cropStitchedImage(self):
-        self.imstcher.smooth_stitched_image()
+        self.imageStitcher.smooth_stitched_image()
 
     def saveOutputImage(self):
-        self.imstcher.save_output_image(self.firstFileName, self.saveDir)
+        self.imageStitcher.save_output_image(self.firstFileName, self.saveDir)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = App()
+    ex = AppLayout()
     ex.show()
     sys.exit(app.exec_())
